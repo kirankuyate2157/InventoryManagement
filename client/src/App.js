@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import { Button } from './components/ui/button';
+import HomeLayout from './layouts/HomeLayout';
 
 
 
@@ -10,9 +10,10 @@ function App() {
     <div className="App">
 
       <Routes>
-        <Route path="" element={<div> <Button variant="outline">Button</Button>
-          </div>} />
-       
+        <Route path="" element={<HomeLayout />} >
+          <Route path="*" element={<div> no page </div>} />
+        </Route>
+
       </Routes>
     </div>
   );
