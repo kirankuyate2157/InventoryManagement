@@ -3,6 +3,7 @@ import './App.css';
 import HomeLayout from './layouts/HomeLayout';
 import Auth from './components/Auth';
 import Category from './components/Category';
+import Inventory from './components/Inventory';
 
 
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/" element={<HomeLayout />} >
           <Route path="/category" element={<Category />} />
+          <Route path="/inventory" element={<Inventory />} />
           <Route path="*" element={<div> no page </div>} />
         </Route>
 
