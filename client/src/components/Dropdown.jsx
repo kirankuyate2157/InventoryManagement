@@ -11,7 +11,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 
-const Dropdown = ({ name, options, setSelectedOption, selectedOption }) => {
+const Dropdown = ({ name, options, setSelectedOption, selectedOption,className,variant="" }) => {
   const handleOptionClick = (option) => {
     console.log("pt s", option);
     setSelectedOption(option);
@@ -20,7 +20,7 @@ const Dropdown = ({ name, options, setSelectedOption, selectedOption }) => {
     <DropdownMenu>
       <DropdownMenuTrigger>
         {" "}
-        <Button>{selectedOption ? selectedOption : name}</Button>
+        <Button className={`${className}`} variant={variant}>{selectedOption ? selectedOption : name}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {options?.map((option, index) => (

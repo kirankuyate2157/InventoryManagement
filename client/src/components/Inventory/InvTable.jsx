@@ -67,20 +67,34 @@ const invoices = [
 ];
 
 export default function InvTable() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 5; // Replace this with the actual total pages
-
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    warehouse: "",
+    images: [],
+    salesPrice: "",
+    listingPrice: "",
+    unit: "",
+    type: "",
+    categories: [],
+  });
   const handlePageChange = (page) => {
     setCurrentPage(page);
     // Fetch new data based on the page
   };
 
-
   return (
     <div className='rounded border  overflow-hidden'>
-      <InventoryPop open={open} setOpen={setOpen} />
-      <Table className="">
+      <InventoryPop
+        open={open}
+        setOpen={setOpen}
+        formData={formData}
+        setFormData={setFormData}
+      />
+      <Table className=''>
         {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
         <TableHeader>
           <TableRow className='bg-muted'>
@@ -110,43 +124,41 @@ export default function InvTable() {
             </TableRow>
           ))}
         </TableBody>
-        </Table>
-        <div className='w-full bg-muted flex justify-end items-center p-2'>
-         
-          <Pagination className=' justify-end px-2'>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
+      </Table>
+      <div className='w-full bg-muted flex justify-end items-center p-2'>
+        <Pagination className=' justify-end px-2'>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href='#'
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
                   href='#'
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                />
+                  isActive={currentPage === index + 1}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </PaginationLink>
               </PaginationItem>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    href='#'
-                    isActive={currentPage === index + 1}
-                    onClick={() => handlePageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext
-                  href='#'
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      
+            ))}
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                href='#'
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 }
