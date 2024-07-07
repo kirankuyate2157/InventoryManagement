@@ -69,7 +69,7 @@ const invoices = [
 export default function InvTable() {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5; // Replace this with the actual total pages
+  const totalPages = 5; 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
