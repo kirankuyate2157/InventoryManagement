@@ -6,6 +6,7 @@ import Category from './components/Category';
 import Inventory from './components/Inventory';
 import Orders from './components/Orders';
 import Dashboard from './components/Dashboard';
+import Home from './components/Home';
 
 
 
@@ -16,14 +17,15 @@ function App() {
 
       <Routes>
         <Route path="/auth" element={<Auth />} />
-        <Route path="/" element={<HomeLayout />} >
-        <Route path="/home" element={<Dashboard />} />
-          <Route path="/category" element={<Category />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/orders" element={<Orders />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/u" element={<HomeLayout />} >
+          <Route path="/u/home" element={<Dashboard />} />
+          <Route path="/u/category" element={<Category />} />
+          <Route path="/u/inventory" element={<Inventory />} />
+          <Route path="/u/orders" element={<Orders />} />
           <Route path="*" element={<div> no page </div>} />
         </Route>
-
+        <Route path="*" element={<div> no page </div>} />
       </Routes>
     </div>
   );

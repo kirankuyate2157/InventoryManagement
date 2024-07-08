@@ -11,7 +11,7 @@ const Sidebar = () => {
       >
         <div className=' h-full flex-col hidden sm:flex overflow-y-auto border-r border-slate-200 bg-background px-3 py-4 dark:border-slate-700 '>
           <div
-            to={"/home"}
+            to={"/u/home"}
             className='mb-10 flex items-center rounded px-3 py-2 text-slate-900 dark:text-white'
           >
             <svg
@@ -37,7 +37,7 @@ const Sidebar = () => {
           <ul className='space-y-2 text-sm font-medium'>
             <li>
               <Link
-                to={"/home"}
+                to={"/u/home"}
                 className='flex items-center rounded px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
               >
                 <svg
@@ -64,7 +64,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to={"/orders"}
+                to={"/u/orders"}
                 className='flex items-start rounded px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
               >
                 <FaUsers className='text-xl' />
@@ -75,7 +75,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to={"/inventory"}
+                to={"/u/inventory"}
                 className='flex items-center rounded px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
               >
                 <FaBuilding className='text-xl' />
@@ -86,7 +86,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to={"/category"}
+                to={"/u/category"}
                 className='flex items-center rounded px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
               >
                 <FaBell className='text-xl' />
@@ -98,7 +98,7 @@ const Sidebar = () => {
             
             <li>
               <Link
-                to={"/setting"}
+                to={"/u/setting"}
                 className='flex items-center rounded px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
               >
                 <svg

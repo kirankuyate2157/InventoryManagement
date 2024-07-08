@@ -53,7 +53,7 @@ const DashboardSkeleton = () => {
               <Skeleton className='h-3 m-4 w-[40%] rounded-md' />
               <Skeleton className='h-3 m-4 w-[30%] rounded-md' />
             </div>
-            <Skeleton className='h-[70%] m-4 w-[95%] bg-gray-800/50 rounded-md' />
+            <Skeleton className='h-[70%] m-4 w-[95%] rounded-md' />
           </div>
         </div>
         <div
@@ -65,7 +65,7 @@ const DashboardSkeleton = () => {
               <Skeleton className='h-3 m-4 w-[40%] rounded-md' />
               <Skeleton className='h-3 m-4 w-[30%] rounded-md' />
             </div>
-            <Skeleton className='h-[70%] m-4 w-[95%] bg-gray-800/50 rounded-md' />
+            <Skeleton className='h-[70%] m-4 w-[95%]  rounded-md' />
           </div>
         </div>
       </div>

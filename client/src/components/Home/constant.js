@@ -1,0 +1,42 @@
+export const products = [
+    {
+        id: 1,
+        image: 'https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=612x612&w=0&k=20&c=aBFGUU-98pnoht73co8r2TZIKF3MDtBBu9KSxtxK_C0=',
+        name: 'Organic Apples',
+        brand: 'Farm Fresh',
+        price: 3.99,
+        marketPrice: 4.99,
+    },
+    {
+        id: 2,
+        image: 'https://images.hindustantimes.com/rf/image_size_640x362/HT/p2/2016/05/23/Pictures/_a8a538ce-20d4-11e6-86a8-6aa3f93e5d3e.jpg',
+        name: 'Whole Wheat Bread',
+        brand: 'Bakery Delight',
+        price: 2.49,
+        marketPrice: 2.99,
+    },
+    {
+        id: 3,
+        image: 'https://media.istockphoto.com/id/1356215334/photo/image-photograph-of-the-speaker-system-on-a-black-background-with-purple-atmospheric.jpg?s=612x612&w=0&k=20&c=f-oJARQEPaUtD1Q2MTHGATTILN2zMjnPcfZEAx59hfs=',
+        name: 'Bluetooth Speaker',
+        brand: 'SoundWave',
+        price: 59.99,
+        marketPrice: 79.99,
+    },
+    {
+        id: 4,
+        image: 'https://post.healthline.com/wp-content/uploads/2019/10/rambutan-exotic-fruit-1296x728-header-1296x728.jpg',
+        name: 'Fresh Strawberries',
+        brand: 'BerryLand',
+        price: 5.99,
+        marketPrice: 6.99,
+    },
+    {
+        id: 5,
+        image: 'https://post.healthline.com/wp-content/uploads/2019/10/rambutan-exotic-fruit-1296x728-header-1296x728.jpg',
+        name: 'Chocolate Cookies',
+        brand: 'Cookie Heaven',
+        price: 4.99,
+        marketPrice: 5.99,
+    },
+];
