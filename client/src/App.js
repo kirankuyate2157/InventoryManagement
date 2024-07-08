@@ -7,6 +7,7 @@ import Inventory from './components/Inventory';
 import Orders from './components/Orders';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';
+import AdminLayout from './layouts/AdminLayout';
 
 
 
@@ -17,8 +18,10 @@ function App() {
 
       <Routes>
         <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<HomeLayout  />} >
         <Route path="/" element={<Home />} />
-        <Route path="/u" element={<HomeLayout />} >
+        </Route>
+        <Route path="/u" element={<AdminLayout  />} >
           <Route path="/u/home" element={<Dashboard />} />
           <Route path="/u/category" element={<Category />} />
           <Route path="/u/inventory" element={<Inventory />} />

@@ -43,7 +43,7 @@ export function InventoryPop({ open, setOpen, formData, setFormData }) {
         <DialogHeader>
           <DialogTitle>Create Inventory</DialogTitle>
         </DialogHeader>
-        <ScrollArea className='grid gap-4 overflow-auto sm:max-h-[80vh] py-4'>
+        <div className='flex flex-col   gap-4 overflow-auto sm:max-h-[80vh] py-4'>
           {/* Product Name */}
           <div className='flex flex-col justify-start items-start gap-4'>
             <Label htmlFor='name' className='text-right'>
@@ -73,7 +73,7 @@ export function InventoryPop({ open, setOpen, formData, setFormData }) {
           </div>
 
           {/* Warehouse */}
-          <div className='w-full flex flex-col justify-start items-start gap-2'>
+          {/* <div className='w-full flex flex-col justify-start items-start gap-2'>
             <Label htmlFor='warehouse' className='text-right'>
               Warehouse
             </Label>
@@ -85,7 +85,7 @@ export function InventoryPop({ open, setOpen, formData, setFormData }) {
               className='col-span-3'
               placeholder='Enter warehouse location'
             />
-          </div>
+          </div> */}
 
           {/* Images */}
           <div className='w-full'>
@@ -175,7 +175,7 @@ export function InventoryPop({ open, setOpen, formData, setFormData }) {
 
           {/* Category Selector */}
           <CategorySelector onChange={handleCategoryChange} />
-        </ScrollArea>
+        </div>
         <DialogFooter>
           <Button type='submit'>Create</Button>
         </DialogFooter>

@@ -6,6 +6,7 @@ import { TbLoader2 } from "react-icons/tb";
 import Dropdown from "../Dropdown";
 import { products } from "./constant";
 import ProductCard from "./ProductCard";
+import MainNavBar from "../MainNavBar";
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,12 +21,6 @@ const Home = () => {
   const [filterOptions, setFilterOptions] = useState([]);
   return (
     <div className='py-5 container'>
-      {/* <div className='md:mb-5 w-full flex text-lg justify-start items-center  '>
-        <Button variant='link' className='text-lg'>
-          Home
-          <GoChevronRight className='h-4 w-4' />
-        </Button>
-      </div> */}
       <div className='flex w-full  items-center justify-between space-x-4 mt-2 mb-4'>
         <div className=' md:w-80 px-5  bg-white shadow-md p-1 md:px-2 flex items-center gap-3  border border-gray-200 rounded-lg'>
           <div className='flex w-full text-black items-center gap-2'>
