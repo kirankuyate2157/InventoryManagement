@@ -1,11 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -20,113 +18,195 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
+import { Input } from "../ui/input";
 
 const invoices = [
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
+    Inv_Id: "INV001",
+    name: "Product 1",
+    description: "Description for Product 1",
+    images: ["image1.jpg", "image2.jpg"],
+    price: "250.00",
+    type: "Type 1",
+    unit: "Kilogram (kg)",
+    stocks: 100,
+    categories: ["Category 1", "Category 2"],
   },
   {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
+    Inv_Id: "INV002",
+    name: "Product 2",
+    description: "Description for Product 2",
+    images: ["image3.jpg", "image4.jpg"],
+    price: "150.00",
+    type: "Type 2",
+    unit: "Centimeter (cm)",
+    stocks: 200,
+    categories: ["Category 3", "Category 4"],
   },
   {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
+    Inv_Id: "INV003",
+    name: "Product 3",
+    description: "Description for Product 3",
+    images: ["image5.jpg", "image6.jpg"],
+    price: "350.00",
+    type: "Type 3",
+    unit: "Liter (L)",
+    stocks: 300,
+    categories: ["Category 5", "Category 6"],
   },
   {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
+    Inv_Id: "INV004",
+    name: "Product 4",
+    description: "Description for Product 4",
+    images: ["image7.jpg", "image8.jpg"],
+    price: "450.00",
+    type: "Type 4",
+    unit: "Kilogram (kg)",
+    stocks: 400,
+    categories: ["Category 7", "Category 8"],
   },
   {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
+    Inv_Id: "INV005",
+    name: "Product 5",
+    description: "Description for Product 5",
+    images: ["image9.jpg", "image10.jpg"],
+    price: "550.00",
+    type: "Type 5",
+    unit: "Centimeter (cm)",
+    stocks: 500,
+    categories: ["Category 9", "Category 10"],
   },
 ];
 
 export default function InvTable() {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5; 
+  const totalPages = 5;
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    warehouse: "",
     images: [],
-    salesPrice: "",
-    listingPrice: "",
-    unit: "",
+    price: "",
     type: "",
+    unit: "",
+    stocks: 0,
     categories: [],
+    Inv_Id: "",
   });
+  const [editIndex, setEditIndex] = useState(null);
+  const [mode, setMode] = useState(true);
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
     // Fetch new data based on the page
   };
 
+  const handleEdit = (index) => {
+    setEditIndex(index);
+    setFormData(invoices[index]);
+  };
+
+  const handleModify = (index) => {
+    setFormData(invoices[index]);
+    setMode(true);
+    setOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    // Save the inline edited data
+    invoices[editIndex] = { ...formData };
+    setEditIndex(null);
+  };
+
   return (
-    <div className='rounded border  overflow-hidden'>
+    <div className='rounded border overflow-hidden'>
       <InventoryPop
         open={open}
         setOpen={setOpen}
         formData={formData}
         setFormData={setFormData}
+        isEditMode={mode}
       />
-      <Table className=''>
-        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
+     <Table className=''>
         <TableHeader>
           <TableRow className='bg-muted'>
             <TableHead className='w-[100px] p-3'>ID</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>type</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>Units</TableHead>
             <TableHead>Price</TableHead>
+            <TableHead>Stocks</TableHead>
             <TableHead className='text-right p-3'>Action</TableHead>
           </TableRow>
-        </TableHeader>
+        </TableHeader> 
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice} className='gap-2 '>
+          {invoices.map((invoice, index) => (
+            <TableRow key={invoice.Inv_Id} className='gap-2'>
               <TableCell className='font-medium p-4'>
-                {invoice.invoice}
+                {invoice.Inv_Id}
               </TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className=' p-4'>{invoice.totalAmount}</TableCell>
+              <TableCell>{invoice.name}</TableCell>
+              <TableCell>{invoice.type}</TableCell>
+              <TableCell>{invoice.unit}</TableCell>
+              <TableCell>
+                {editIndex === index ? (
+                  <Input
+                    id='price'
+                    type='number'
+                    value={formData.price}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        price: e.target.value,
+                      }))
+                    }
+                  />
+                ) : (
+                  invoice.price
+                )}
+              </TableCell>
+              <TableCell>
+                {editIndex === index ? (
+                  <Input
+                    id='stocks'
+                    type='number'
+                    value={formData.stocks}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        stocks: e.target.value,
+                      }))
+                    }
+                  />
+                ) : (
+                  invoice.stocks
+                )}
+              </TableCell>
               <TableCell className='text-right p-4'>
-                <Button variant='outline' onClick={() => setOpen(true)}>
-                  Edit Profile
-                </Button>
+                {editIndex === index ? (
+                  <Button variant='outline' onClick={handleSaveEdit}>
+                    Save
+                  </Button>
+                ) : (
+                  <div className='flex gap-2 justify-end'>
+                    <Button variant='outline' onClick={() => handleEdit(index)}>
+                      Edit
+                    </Button>
+                    <Button
+                      variant='outline'
+                      onClick={() => handleModify(index)}
+                    >
+                      Modify
+                    </Button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <div className='w-full bg-muted flex justify-end items-center p-2'>
-        <Pagination className=' justify-end px-2'>
+        <Pagination className='justify-end px-2'>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

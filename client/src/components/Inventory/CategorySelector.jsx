@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { RxCross2 } from "react-icons/rx";
-const CategorySelector = () => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
 
+const CategorySelector = ({ selectedCategories, setSelectedCategories }) => {
   const availableCategories = [
-    "Technology",
-    "Science",
-    "Health",
-    "Education",
-    "Business",
-    "Entertainment",
-    "Sports",
+    "Category 1",
+    "Category 2",
+    "Category 3",
+    "Category 4",
+    "Category 5",
+    "Category 6",
+    "Category 7",
+    "Category 8",
+    "Category 9",
+    "Category 10",
   ];
 
   const handleAddCategory = (category) => {
@@ -29,9 +31,6 @@ const CategorySelector = () => {
   return (
     <div className='w-full px-0.5 py-2 mx-auto'>
       <div className='mb-4'>
-        {/* <label className='block mb-2 text-sm '>
-          Select Categories
-        </label> */}
         <Select onValueChange={handleAddCategory}>
           <SelectTrigger className='w-full'>
             <span>Select a category</span>
@@ -46,7 +45,6 @@ const CategorySelector = () => {
                 }`}
               >
                 {category}
-               
               </SelectItem>
             ))}
           </SelectContent>

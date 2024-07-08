@@ -17,19 +17,17 @@ export function Selector({
   className = "",
 }) {
   return (
-    <Select>
+    <Select value={selectedOption} onValueChange={setSelectedOption}>
       <SelectTrigger className={`w-full ${className}`}>
-        <SelectValue placeholder={name ?? "Select"} />
+        <SelectValue placeholder={name ?? "Select"}>
+          {(selectedOption || name )?? "Select"}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{name ?? "Select value"}</SelectLabel>
           {options?.map((option, index) => (
-            <SelectItem
-              key={index}
-              onClick={() => setSelectedOption(option)}
-              value={option}
-            >
+            <SelectItem key={index} value={option}>
               {option}
             </SelectItem>
           ))}
