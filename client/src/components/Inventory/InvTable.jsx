@@ -19,6 +19,9 @@ import {
   PaginationPrevious,
 } from "../ui/pagination";
 import { Input } from "../ui/input";
+import { Switch } from "../ui/switch";
+import { RiEdit2Line } from "react-icons/ri";
+import { BiEdit } from "react-icons/bi";
 
 const invoices = [
   {
@@ -127,18 +130,19 @@ export default function InvTable() {
         setFormData={setFormData}
         isEditMode={mode}
       />
-     <Table className=''>
+      <Table className=''>
         <TableHeader>
           <TableRow className='bg-muted'>
             <TableHead className='w-[100px] p-3'>ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Type</TableHead>
+            <TableHead>Category</TableHead>
             <TableHead>Units</TableHead>
             <TableHead>Price</TableHead>
             <TableHead>Stocks</TableHead>
-            <TableHead className='text-right p-3'>Action</TableHead>
+            <TableHead className='text-center p-3'>Action</TableHead>
           </TableRow>
-        </TableHeader> 
+        </TableHeader>
         <TableBody>
           {invoices.map((invoice, index) => (
             <TableRow key={invoice.Inv_Id} className='gap-2'>
@@ -147,6 +151,11 @@ export default function InvTable() {
               </TableCell>
               <TableCell>{invoice.name}</TableCell>
               <TableCell>{invoice.type}</TableCell>
+              <TableCell>
+                {invoice.categories
+                  .map((category, index) => category)
+                  .join(", ")}
+              </TableCell>
               <TableCell>{invoice.unit}</TableCell>
               <TableCell>
                 {editIndex === index ? (
@@ -183,23 +192,29 @@ export default function InvTable() {
                 )}
               </TableCell>
               <TableCell className='text-right p-4'>
-                {editIndex === index ? (
-                  <Button variant='outline' onClick={handleSaveEdit}>
-                    Save
-                  </Button>
-                ) : (
-                  <div className='flex gap-2 justify-end'>
-                    <Button variant='outline' onClick={() => handleEdit(index)}>
-                      Edit
+                <div className='flex gap-2 justify-end  items-center'>
+                  {editIndex === index ? (
+                    <Button variant='outline' onClick={handleSaveEdit}>
+                      Save
                     </Button>
-                    <Button
-                      variant='outline'
-                      onClick={() => handleModify(index)}
-                    >
-                      Modify
-                    </Button>
-                  </div>
-                )}
+                  ) : (
+                    <div className='flex gap-2 justify-end'>
+                      <Button
+                        variant='outline'
+                        onClick={() => handleEdit(index)}
+                      >
+                        <RiEdit2Line />
+                      </Button>
+                      <Button
+                        variant='outline'
+                        onClick={() => handleModify(index)}
+                      >
+                        Modify
+                      </Button>
+                    </div>
+                  )}
+                  <Switch />
+                </div>
               </TableCell>
             </TableRow>
           ))}
