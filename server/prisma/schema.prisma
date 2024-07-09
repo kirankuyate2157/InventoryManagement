@@ -12,3 +12,40 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Inventory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  images      String[]
+  price       Float
+  type        String?
+  unit        String
+  is_active    Boolean   @default(true)
+  categories  String[]
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
+model Combo {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  images      String[]
+  total_price Float
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  items       ComboItem[]
+}
+
+model ComboItem {
+  id           Int       @id @default(autoincrement())
+  inventory_id Int
+  quantity     Int
+  comboPrice   Float
+  comboUnit    String
+  combo_id     Int
+  combo        Combo     @relation(fields: [combo_id], references: [id])
+
+  @@unique([inventory_id, combo_id])
+}
