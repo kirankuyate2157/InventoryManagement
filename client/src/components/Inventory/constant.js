@@ -64,3 +64,56 @@ export const units = [
     "Carton (ctn)",
     "Pallet (plt)"
 ];
+export const initialCombo = [{
+    comboId: "COMBO001",
+    name: "Combo 1",
+    description: "This is a description of Combo 1",
+    images: [
+        "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8NHx8fGVufDB8fHx8fA%3D%3D"
+    ],
+    items: [
+        {
+            id: "PROD001",
+            name: "Product 1",
+            type: "Electronics",
+            unit: "Piece",
+            comboPrice: "$100.00",
+            quantity: 2,
+        },
+        {
+            id: "PROD002",
+            name: "Product 2",
+            type: "Books",
+            unit: "Piece",
+            comboPrice: "$50.00",
+            quantity: 2,
+        },
+    ],
+    totalPrice: "$250.00",
+}, {
+    comboId: "COMBO002",
+    name: "Combo 1",
+    description: "This is a description of Combo 1",
+    images: [
+        "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8NHx8fGVufDB8fHx8fA%3D%3D"
+    ],
+    items: [
+        {
+            id: "PROD001",
+            name: "Product 1",
+            type: "Electronics",
+            unit: "Piece",
+            comboPrice: "$100.00",
+            quantity: 2,
+        },
+        {
+            id: "PROD002",
+            name: "Product 2",
+            type: "Books",
+            unit: "Piece",
+            comboPrice: "$50.00",
+            quantity: 2,
+        },
+    ],
+    totalPrice: "$330.00",
+}]

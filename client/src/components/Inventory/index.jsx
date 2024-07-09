@@ -14,9 +14,15 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../ui/dialog";
+import ComboInventoryCreation from "./ComboInventoryCreation";
+import { FaLayerGroup } from "react-icons/fa6";
+import { MdOutlineAcUnit } from "react-icons/md";
+import ComboAccordion from "./ComboAccordion";
+import { initialCombo } from "./constant";
 
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [tab, setTab] = useState("inv");
   const [sortOrder, setSortOrder] = useState(null);
   const [filterOption, setFilterOption] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +47,13 @@ const Inventory = () => {
   const [uploadedData, setUploadedData] = useState([]);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const fileInputRef = useRef(null);
+  const [isComboCreationOpen, setComboCreationOpen] = useState(false);
+  const [combos, setCombos] = useState([]);
+
+  const handleCreateCombo = (comboDetails) => {
+    console.log("c gp : ", comboDetails);
+    setCombos([...combos, comboDetails]);
+  };
 
   const existingData = [
     {
@@ -170,59 +183,99 @@ const Inventory = () => {
 
   return (
     <div className='py-5'>
-      <div className='md:mb-5 w-full flex text-lg justify-start items-center'>
-        <Button variant='link' className='text-lg'>
-          Inventory
-          <GoChevronRight className='h-4 w-4' />
-        </Button>
+      <div className='md:mb-5 w-full flex text-lg justify-between  items-center'>
+        <div className='flex  justify-start'>
+          <Button
+            variant='link'
+            onClick={() => setTab("inv")}
+            className='text-lg pr-1'
+          >
+            Inventory
+            <GoChevronRight className='h-4 w-4' />
+          </Button>
+          {tab === "combo" && (
+            <Button
+              variant='link'
+              onClick={() => setTab("combo")}
+              className='text-lg  pl-0 pr-1'
+            >
+              Combo
+              <GoChevronRight className='h-4 w-4' />
+            </Button>
+          )}
+        </div>
+        <span className='flex gap-2'>
+          <Button
+            variant='outline'
+            onClick={() => setTab("combo")}
+            className='text-md'
+          >
+            <FaLayerGroup className='h-4 w-4' />
+          </Button>
+          <Button
+            variant='outline'
+            onClick={() => setTab("deActive")}
+            className='text-md'
+          >
+            <MdOutlineAcUnit className='h-4 w-4' />
+          </Button>
+        </span>
       </div>
-      <div className='flex w-full items-center justify-between space-x-4 mt-2 mb-4'>
-        <div className='md:w-80 px-5 bg-white shadow-md p-1 md:px-2 flex items-center gap-3 border border-gray-200 rounded-lg'>
-          <div className='flex w-full text-black items-center gap-2'>
-            <RiSearch2Line className='text-lg' />
-            <input
-              type='search'
-              placeholder='Search..'
-              className='w-full bg-transparent focus:outline-none'
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      {tab === "inv" && (
+        <>
+          <div className='flex w-full items-center justify-between space-x-4 mt-2 mb-4'>
+            <div className='md:w-80 px-5 bg-white shadow-md p-1 md:px-2 flex items-center gap-3 border border-gray-200 rounded-lg'>
+              <div className='flex w-full text-black items-center gap-2'>
+                <RiSearch2Line className='text-lg' />
+                <input
+                  type='search'
+                  placeholder='Search..'
+                  className='w-full bg-transparent focus:outline-none'
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className='flex gap-3'>
+              <Button onClick={() => setComboCreationOpen(true)}>
+                Create Combo
+              </Button>
+              <input
+                type='file'
+                accept='.xlsx, .xls'
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                className='hidden'
+              />
+              <Button onClick={handleUploadClick}>Upload</Button>
+              <Button onClick={handleCreateClick}>Create</Button>
+            </div>
           </div>
-        </div>
-        <div className='flex gap-3'>
-          <input
-            type='file'
-            accept='.xlsx, .xls'
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className='hidden'
+          <InvTable />
+          <InventoryPop
+            open={isPopOpen}
+            setOpen={setIsPopOpen}
+            formData={formData}
+            setFormData={setFormData}
+            isEditMode={isEditMode}
+            uploadedData={uploadedData}
           />
-          <Button onClick={handleUploadClick}>Upload</Button>
-          <Dropdown
-            name='Filter'
-            options={filterOptions}
-            selectedOption={filterOption}
-            setSelectedOption={setFilterOption}
-          />
-          <Button onClick={handleCreateClick}>Create</Button>
-        </div>
-      </div>
-      <InvTable />
-      <InventoryPop
-        open={isPopOpen}
-        setOpen={setIsPopOpen}
-        formData={formData}
-        setFormData={setFormData}
-        isEditMode={isEditMode}
-        uploadedData={uploadedData}
-      />
 
-      <InventoryUpload
-        closeModal={closeModal}
-        open={isUploadOpen}
-        existingData={existingData}
-        updateInventory={updateInventory}
-        parsedData={uploadedData}
-      />
+          <InventoryUpload
+            closeModal={closeModal}
+            open={isUploadOpen}
+            existingData={existingData}
+            updateInventory={updateInventory}
+            parsedData={uploadedData}
+          />
+          <ComboInventoryCreation
+            open={isComboCreationOpen}
+            closeModal={() => setComboCreationOpen(false)}
+            inventoryItems={existingData}
+            createCombo={handleCreateCombo}
+          />
+        </>
+      )}
+      {tab === "combo" && <ComboAccordion combos={initialCombo} />}
     </div>
   );
 };
