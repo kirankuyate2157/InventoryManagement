@@ -1,5 +1,4 @@
 import { Router } from "express";
-import dotenv from "dotenv";
 import {
   createInventory,
   deleteInventory,
@@ -7,7 +6,6 @@ import {
   getInventoryById,
   updateInventory,
 } from "../controllers/inventory.controller.js";
-dotenv.config();
 
 const router = Router();
 
