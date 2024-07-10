@@ -20,6 +20,7 @@ model Inventory {
   images      String[]
   price       Float
   type        String?
+  stocks      Int        @default(0)
   unit        String
   is_active    Boolean   @default(true)
   categories  String[]

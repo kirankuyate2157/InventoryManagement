@@ -14,7 +14,8 @@ import { BsUpload } from "react-icons/bs";
 import CategorySelector from "./CategorySelector";
 import { Selector } from "../Selector";
 import { units } from "./constant";
-import { ScrollArea } from "../ui/scroll-area";
+import { handleS3Upload } from "../../utils/DocUpload.js";
+import { createInventory, updateInventory } from "./apis/inventoryAPI";
 
 export function InventoryPop({
   open,
@@ -22,6 +23,7 @@ export function InventoryPop({
   formData,
   setFormData,
   isEditMode,
+  fetchInventory,
 }) {
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -32,20 +34,15 @@ export function InventoryPop({
     const files = Array.from(event.target.files);
     setFormData((prevData) => ({
       ...prevData,
-      images: [
-        ...prevData.images,
-        ...files.map((file) => URL.createObjectURL(file)),
-      ],
+      images: [...prevData.images, ...files],
     }));
   };
 
-  const handleCategoryChange = (categories) => {
-    setFormData((prevData) => ({ ...prevData, categories }));
-  };
 
   useEffect(() => {
     if (!isEditMode) {
       setFormData({
+        id: "",
         name: "",
         description: "",
         images: [],
@@ -58,16 +55,30 @@ export function InventoryPop({
     }
   }, [isEditMode, setFormData]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditMode) {
-      // Handle update logic
-      console.log("Updating inventory item:", formData);
-    } else {
-      // Handle create logic
-      console.log("Creating new inventory item:", formData);
+    try {
+      let response;
+
+      const uploadedImageUrls = await handleS3Upload(formData.images);
+      if (isEditMode) {
+        response = await updateInventory(formData.id, {
+          ...formData,
+          images: uploadedImageUrls,
+        });
+        console.log("Inventory item updated successfully:", response);
+      } else {
+        response = await createInventory({
+          ...formData,
+          images: uploadedImageUrls,
+        });
+        console.log("New inventory item created successfully:", response);
+      }
+      setOpen(false);
+      fetchInventory();
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
-    setOpen(false);
   };
 
   return (
@@ -79,7 +90,6 @@ export function InventoryPop({
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          {/* Product Name */}
           <div className='flex flex-col gap-4 overflow-auto sm:max-h-[80vh] py-4'>
             <div className='flex flex-col justify-start items-start gap-4'>
               <Label htmlFor='name' className='text-right'>
@@ -95,7 +105,6 @@ export function InventoryPop({
               />
             </div>
 
-            {/* Product Description */}
             <div className='flex flex-col items-start gap-4'>
               <Label htmlFor='description' className='text-right'>
                 Description
@@ -108,7 +117,6 @@ export function InventoryPop({
               />
             </div>
 
-            {/* Images */}
             <div className='w-full'>
               <div className='flex flex-wrap overflow-auto h-[150px] w-full p-2 gap-2 items-center justify-start rounded-md border border-dashed text-sm'>
                 <label className='w-full max-w-28 h-32 flex flex-col gap-2 justify-center items-center rounded bg-muted cursor-pointer'>
@@ -129,7 +137,11 @@ export function InventoryPop({
                     className='w-full max-w-28 h-32 flex flex-col gap-2 justify-center items-center rounded-md overflow-hidden bg-muted'
                   >
                     <img
-                      src={image}
+                      src={
+                        image instanceof File
+                          ? URL.createObjectURL(image)
+                          : image
+                      }
                       alt={`Uploaded ${index}`}
                       className='w-full h-full object-cover'
                     />
@@ -138,7 +150,6 @@ export function InventoryPop({
               </div>
             </div>
 
-            {/* Price */}
             <div className='flex w-full gap-4'>
               <div className='w-full flex flex-col justify-start items-start gap-2'>
                 <Label htmlFor='price' className='text-right'>
@@ -169,7 +180,6 @@ export function InventoryPop({
               </div>
             </div>
 
-            {/* Unit and Type */}
             <div className='flex w-full gap-4'>
               <div className='w-full flex flex-col justify-start items-start gap-2'>
                 <Label htmlFor='type' className='text-right'>
@@ -185,7 +195,7 @@ export function InventoryPop({
                 />
               </div>
               <div className='w-full flex flex-col justify-end items-start gap-2'>
-              <Selector
+                <Selector
                   id='unit'
                   name={"Select Unit"}
                   options={units}
@@ -197,7 +207,6 @@ export function InventoryPop({
               </div>
             </div>
 
-            {/* Category Selector */}
             <CategorySelector
               selectedCategories={formData.categories}
               setSelectedCategories={(categories) =>

@@ -1,7 +1,7 @@
 import { prisma } from "./../lib/db.js";
 
 const createInventory = async (req, res) => {
-  const { name, description, images, price, type, unit, categories } = req.body;
+  let { name, description, images, price, stocks, type, unit, categories } = req.body;
 
   try {
     if (!name || !price || !unit || !type) {
@@ -9,13 +9,15 @@ const createInventory = async (req, res) => {
         .status(400)
         .json({ message: "Name, price, and unit are required fields 🫠" });
     }
-
+    price = parseFloat(price);
+    stocks = Number(stocks)
     // check types
     if (
       typeof name !== "string" ||
       typeof price !== "number" ||
       typeof unit !== "string" ||
-      typeof type !== "string"
+      typeof type !== "string" ||
+      typeof stocks !== "number"
     ) {
       return res
         .status(400)
@@ -30,6 +32,7 @@ const createInventory = async (req, res) => {
         price,
         type,
         unit,
+        stocks,
         categories,
       },
     });
@@ -49,8 +52,8 @@ const createInventory = async (req, res) => {
 };
 
 const updateInventory = async (req, res) => {
-  const { id } = parseInt(req.params);
-  const { name, description, images, price, type, unit, is_active } = req.body;
+  const { id } = req.params;
+  const { name, description, images, price, stocks, categories, type, unit, is_active } = req.body;
 
   try {
     const existingInventory = await prisma.inventory.findUnique({
@@ -66,8 +69,9 @@ const updateInventory = async (req, res) => {
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (images !== undefined) updateData.images = images; // directly updating all images
-    if (price !== undefined) updateData.price = price;
+    if (price !== undefined) updateData.price = Number(price);
     if (type !== undefined) updateData.type = type;
+    if (stocks !== undefined) updateData.stocks = Number(stocks);
     if (unit !== undefined) updateData.unit = unit;
     if (is_active !== undefined) updateData.is_active = is_active;
     if (categories !== undefined) updateData.categories = categories;
@@ -117,8 +121,8 @@ const deleteInventory = async (req, res) => {
 };
 
 const updateInventoryBatch = async (req, res) => {
-  const inventoryUpdates = req.body.inventoryUpdates; //inv array
-
+  const inventoryUpdates = req.body; //inv array
+  console.log("body :", inventoryUpdates)
   try {
     if (!Array.isArray(inventoryUpdates)) {
       throw new Error(
@@ -128,21 +132,24 @@ const updateInventoryBatch = async (req, res) => {
 
     const updatedInventories = await Promise.all(
       inventoryUpdates?.map(async (update) => {
-        const { id, stocks, price } = update;
-
+        const { id, updatedStock, updatedPrice, isChecked } = update;
+        if (!isChecked) {
+          return;
+        }
         const existingInventory = await prisma.inventory.findUnique({
-          where: { id },
+          where: { id: parseInt(id) },
         });
 
         if (!existingInventory) {
-          throw new Error(`Inventory item with id ${id} not found. 🫠`);
+          return;
+          // throw new Error(`Inventory item with id ${id} not found. 🫠`);
         }
 
         const updatedInventory = await prisma.inventory.update({
           where: { id },
           data: {
-            stocks: stocks !== undefined ? stocks : existingInventory.stocks,
-            price: price !== undefined ? price : existingInventory.price,
+            stocks: updatedStock !== undefined ? updatedStock : existingInventory.stocks,
+            price: updatedPrice !== undefined ? updatedPrice : existingInventory.price,
           },
         });
 
@@ -211,7 +218,6 @@ const getAllInventory = async (req, res) => {
         { description: { contains: search, mode: "insensitive" } },
         { type: { contains: search, mode: "insensitive" } },
       ],
-      categories: { contains: filter },
     };
 
     const inventory = await prisma.inventory.findMany({

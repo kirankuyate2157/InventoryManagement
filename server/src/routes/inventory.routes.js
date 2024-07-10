@@ -5,16 +5,17 @@ import {
   getAllInventory,
   getInventoryById,
   updateInventory,
+  updateInventoryBatch,
 } from "../controllers/inventory.controller.js";
 
 const router = Router();
 
 router.route("/create").post(createInventory);
+router.route("/update-batch").patch(updateInventoryBatch);
 router.route("/:id").patch(updateInventory);
-router.route("/update-batch").patch(updateInventory);
 
-router.route("/:id").delete(deleteInventory);
-router.route("/all").get(getInventoryById);
+router.route("/delete/:id").delete(deleteInventory);
 router.route("/all").get(getAllInventory);
+router.route("/:id").get(getInventoryById);
 
 export default router;

@@ -25,6 +25,7 @@ const InventoryUpload = ({
   existingData,
   parsedData,
   updateInventory,
+  fetchInventory,
 }) => {
   const [inventoryData, setInventoryData] = useState([]);
 
@@ -38,9 +39,7 @@ const InventoryUpload = ({
 
   const mergeDataWithExisting = (newData, existingData) => {
     return newData.map((newItem) => {
-      const existingItem = existingData.find(
-        (item) => item.Inv_Id === newItem.Inv_Id
-      );
+      const existingItem = existingData.find((item) => item.id === newItem.id);
 
       const existingPrice = existingItem ? parseFloat(existingItem.price) : 0;
       const existingStock = existingItem ? parseInt(existingItem.stocks) : 0;
@@ -51,19 +50,17 @@ const InventoryUpload = ({
         ...newItem,
         existingPrice,
         existingStock,
-        updatedPrice,
-        updatedStock,
-        totalPrice: existingPrice + updatedPrice,
-        totalStock: existingStock + updatedStock,
+        updatedPrice: existingPrice + updatedPrice,
+        updatedStock: existingStock + updatedStock,
         isChecked: false,
-        isEditing: false, // Add isEditing state
+        isEditing: false,
       };
     });
   };
 
   const handleCheckRow = (invId) => {
     const updatedData = inventoryData.map((item) =>
-      item.Inv_Id === invId ? { ...item, isChecked: !item.isChecked } : item
+      item.id === invId ? { ...item, isChecked: !item.isChecked } : item
     );
     setInventoryData(updatedData);
   };
@@ -80,6 +77,8 @@ const InventoryUpload = ({
   const handleSave = () => {
     const updatedItems = inventoryData.filter((item) => item.isChecked);
     updateInventory(updatedItems);
+    fetchInventory();
+    closeModal();
   };
 
   const handleToggleEdit = (index) => {
@@ -117,12 +116,15 @@ const InventoryUpload = ({
               </TableHeader>
               <TableBody>
                 {inventoryData.map((invoice, index) => (
-                  <TableRow key={invoice.Inv_Id} className='gap-2'>
-                    <TableCell onClick={() => handleCheckRow(invoice.Inv_Id)}>
-                      <Checkbox checked={invoice.isChecked} />
+                  <TableRow key={invoice.id} className='gap-2'>
+                    <TableCell>
+                      <Checkbox
+                        checked={invoice.isChecked}
+                        onCheckedChange={() => handleCheckRow(invoice.id)}
+                      />
                     </TableCell>
                     <TableCell className='font-medium py-4'>
-                      {invoice.Inv_Id}
+                      {invoice.id}
                     </TableCell>
                     <TableCell>{invoice.name}</TableCell>
                     <TableCell>{invoice.type}</TableCell>

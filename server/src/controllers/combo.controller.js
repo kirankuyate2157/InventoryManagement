@@ -2,7 +2,7 @@ import { prisma } from "./../lib/db.js";
 
 const createCombo = async (req, res) => {
   const { name, description, images, items } = req.body;
-
+  console.log(name, description, images, items)
   if (!name || !items || items.length === 0 || !areItemsValid(items)) {
     return res
       .status(400)
@@ -21,7 +21,7 @@ const createCombo = async (req, res) => {
         items: {
           createMany: {
             data: items.map((item) => ({
-              inventory_id: item?.inventory_id,
+              inventory_id: item?.id,
               quantity: item?.quantity || 1,
               comboPrice: item?.comboPrice || 0,
               comboUnit: item?.comboUnit || "",
@@ -188,7 +188,7 @@ const calculateTotalPrice = (items) => {
 
 const areItemsValid = (items) => {
   return items.every(
-    (item) => item.inventory_id && item.comboPrice && item.comboUnit
+    (item) => item.id && item.comboPrice && item.comboUnit
   );
 };
 

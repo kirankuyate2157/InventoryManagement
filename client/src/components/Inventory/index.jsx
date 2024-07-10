@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../ui/button";
 import { GoChevronRight } from "react-icons/go";
 import { RiSearch2Line } from "react-icons/ri";
@@ -7,6 +7,8 @@ import InvTable from "./InvTable";
 import { InventoryPop } from "./InventoryPop";
 import InventoryUpload from "./InventoryUpload";
 import * as XLSX from "xlsx";
+import Papa from "papaparse";
+
 import {
   Dialog,
   DialogContent,
@@ -19,6 +21,8 @@ import { FaLayerGroup } from "react-icons/fa6";
 import { MdOutlineAcUnit } from "react-icons/md";
 import ComboAccordion from "./ComboAccordion";
 import { initialCombo } from "./constant";
+import { getAllInventory, updateInventoryBatch } from "./apis/inventoryAPI";
+import { createCombo } from "./apis/comboAPI";
 
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,9 +53,11 @@ const Inventory = () => {
   const fileInputRef = useRef(null);
   const [isComboCreationOpen, setComboCreationOpen] = useState(false);
   const [combos, setCombos] = useState([]);
-
-  const handleCreateCombo = (comboDetails) => {
+  const [inventory, setInventory] = useState([]);
+  const handleCreateCombo = async (comboDetails) => {
     console.log("c gp : ", comboDetails);
+    const res = await createCombo(comboDetails);
+    console.log("DB grp :  : ", res);
     setCombos([...combos, comboDetails]);
   };
 
@@ -113,9 +119,10 @@ const Inventory = () => {
     },
   ];
 
-  const updateInventory = (updatedData) => {
+  const updateInventory = async (updatedData) => {
     // Logic to update inventory with the new data
-    console.log("Updated Inventory Data:", updatedData);
+    const res = await updateInventoryBatch(updatedData);
+    console.log("Updated Inventory Data:", res);
   };
 
   const handleCreateClick = () => {
@@ -127,32 +134,6 @@ const Inventory = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
-  };
-
-  const parseCSVStrings = (data) => {
-    return data.map((item) => {
-      // Extract the CSV string
-      const csvString =
-        item[
-          "Inv_Id,name,description,images,price,type,unit,stocks,categories"
-        ];
-
-      // Split the CSV string by commas, considering quoted fields
-      const parts = csvString.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-
-      // Extract values into an object with proper keys
-      return {
-        Inv_Id: parts[0],
-        name: parts[1],
-        description: parts[2],
-        images: parts[3].slice(1, -1).split(","), // Remove surrounding quotes and split into array
-        price: parseFloat(parts[4]),
-        type: parts[5],
-        unit: parts[6],
-        stocks: parseInt(parts[7]),
-        categories: parts.slice(8).map((category) => category.slice(1, -1)), // Remove surrounding quotes from categories
-      };
-    });
   };
 
   const handleFileUpload = (e) => {
@@ -167,9 +148,6 @@ const Inventory = () => {
         // const json = XLSX.utils.sheet_to_json(worksheet);
         const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
         setUploadedData(json);
-        // Parse the raw data
-        const parsedData = parseCSVStrings(json);
-        setUploadedData(parsedData);
         console.log("kkk : ", json);
         setIsUploadOpen(true);
       };
@@ -180,6 +158,18 @@ const Inventory = () => {
   const closeModal = () => {
     setIsUploadOpen(false);
   };
+
+  const fetchInventory = async () => {
+    const response = await getAllInventory();
+    if (response) {
+      setInventory(response?.inventory);
+      console.log("kkk fetch : ", response);
+    }
+  };
+
+  useEffect(() => {
+    fetchInventory();
+  }, []);
 
   return (
     <div className='py-5'>
@@ -241,7 +231,7 @@ const Inventory = () => {
               </Button>
               <input
                 type='file'
-                accept='.xlsx, .xls'
+                accept='.xlsx, .xls,  .csv'
                 ref={fileInputRef}
                 onChange={handleFileUpload}
                 className='hidden'
@@ -250,27 +240,28 @@ const Inventory = () => {
               <Button onClick={handleCreateClick}>Create</Button>
             </div>
           </div>
-          <InvTable />
+          {inventory?.length > 0 && <InvTable data={inventory} />}
           <InventoryPop
             open={isPopOpen}
             setOpen={setIsPopOpen}
             formData={formData}
             setFormData={setFormData}
             isEditMode={isEditMode}
-            uploadedData={uploadedData}
+            fetchInventory={fetchInventory}
           />
 
           <InventoryUpload
             closeModal={closeModal}
             open={isUploadOpen}
-            existingData={existingData}
+            existingData={inventory}
             updateInventory={updateInventory}
             parsedData={uploadedData}
+            fetchInventory={fetchInventory}
           />
           <ComboInventoryCreation
             open={isComboCreationOpen}
             closeModal={() => setComboCreationOpen(false)}
-            inventoryItems={existingData}
+            inventoryItems={inventory}
             createCombo={handleCreateCombo}
           />
         </>

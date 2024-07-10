@@ -22,8 +22,9 @@ import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
 import { RiEdit2Line } from "react-icons/ri";
 import { BiEdit } from "react-icons/bi";
+import { updateInventory } from "./apis/inventoryAPI";
 
-const invoices = [
+const dummy = [
   {
     Inv_Id: "INV001",
     name: "Product 1",
@@ -81,7 +82,7 @@ const invoices = [
   },
 ];
 
-export default function InvTable() {
+export default function InvTable({ data }) {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 5;
@@ -106,21 +107,43 @@ export default function InvTable() {
 
   const handleEdit = (index) => {
     setEditIndex(index);
-    setFormData(invoices[index]);
+    setFormData(data[index]);
   };
 
   const handleModify = (index) => {
-    setFormData(invoices[index]);
+    setFormData(data[index]);
     setMode(true);
     setOpen(true);
   };
 
-  const handleSaveEdit = () => {
-    // Save the inline edited data
-    invoices[editIndex] = { ...formData };
+  const handleSaveEdit = async (id) => {
+    const res = await updateInventory(id, {
+      stocks: formData.stocks,
+      price: formData.price,
+    });
+
+    data[editIndex] = { ...formData };
     setEditIndex(null);
   };
 
+  const handleSwitch = async (index, id) => {
+    console.log("ssss :", {
+      is_active: !data[index].is_active,
+    });
+    const updatedInventory = await updateInventory(id, {
+      is_active: !data[index].is_active,
+    });
+
+    data[index] = {
+      ...data[index],
+      is_active: updatedInventory.is_active,
+    };
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      is_active: updatedInventory.is_active,
+    }));
+  };
   return (
     <div className='rounded border overflow-hidden'>
       <InventoryPop
@@ -144,11 +167,9 @@ export default function InvTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice, index) => (
+          {data?.map((invoice, index) => (
             <TableRow key={invoice.Inv_Id} className='gap-2'>
-              <TableCell className='font-medium p-4'>
-                {invoice.Inv_Id}
-              </TableCell>
+              <TableCell className='font-medium p-4'>{invoice.id}</TableCell>
               <TableCell>{invoice.name}</TableCell>
               <TableCell>{invoice.type}</TableCell>
               <TableCell>
@@ -194,7 +215,10 @@ export default function InvTable() {
               <TableCell className='text-right p-4'>
                 <div className='flex gap-2 justify-end  items-center'>
                   {editIndex === index ? (
-                    <Button variant='outline' onClick={handleSaveEdit}>
+                    <Button
+                      variant='outline'
+                      onClick={() => handleSaveEdit(invoice.id)}
+                    >
                       Save
                     </Button>
                   ) : (
@@ -213,7 +237,10 @@ export default function InvTable() {
                       </Button>
                     </div>
                   )}
-                  <Switch />
+                  <Switch
+                    checked={invoice.is_active}
+                    onCheckedChange={() => handleSwitch(index, invoice.id)}
+                  />
                 </div>
               </TableCell>
             </TableRow>

@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { handleS3Upload } from "../../utils/DocUpload.js";
 
 const ComboInventoryCreation = ({
   open,
@@ -40,10 +41,7 @@ const ComboInventoryCreation = ({
     const files = Array.from(event.target.files);
     setComboDetails((prevData) => ({
       ...prevData,
-      images: [
-        ...prevData.images,
-        ...files.map((file) => URL.createObjectURL(file)),
-      ],
+      images: [...prevData.images, ...files],
     }));
   };
 
@@ -57,7 +55,7 @@ const ComboInventoryCreation = ({
 
   const handleItemChange = (invId, field, value) => {
     const updatedItems = comboDetails.items.map((item) =>
-      item.Inv_Id === invId ? { ...item, [field]: value } : item
+      item.id === invId ? { ...item, [field]: value } : item
     );
     setComboDetails((prevDetails) => ({
       ...prevDetails,
@@ -76,9 +74,7 @@ const ComboInventoryCreation = ({
   };
 
   const handleRemoveItem = (invId) => {
-    const updatedItems = comboDetails.items.filter(
-      (item) => item.Inv_Id !== invId
-    );
+    const updatedItems = comboDetails.items.filter((item) => item.id !== invId);
     setComboDetails((prevDetails) => ({
       ...prevDetails,
       items: updatedItems,
@@ -87,16 +83,16 @@ const ComboInventoryCreation = ({
 
   const handleCheckboxChange = (item) => {
     const isSelected = comboDetails.items.some(
-      (comboItem) => comboItem.Inv_Id === item.Inv_Id
+      (comboItem) => comboItem.id === item.id
     );
     if (isSelected) {
-      handleRemoveItem(item.Inv_Id);
+      handleRemoveItem(item.id);
     } else {
       handleAddItem(item);
     }
   };
 
-  const handleSaveCombo = () => {
+  const handleSaveCombo = async () => {
     // Validate combo details
     if (
       comboDetails.name &&
@@ -104,7 +100,8 @@ const ComboInventoryCreation = ({
       comboDetails.images.length > 0 &&
       comboDetails.items.length >= 2
     ) {
-      createCombo(comboDetails);
+      const uploadedImageUrls = await handleS3Upload(comboDetails.images);
+      createCombo({ ...comboDetails, images: uploadedImageUrls });
       closeModal();
     } else {
       alert(
@@ -166,7 +163,9 @@ const ComboInventoryCreation = ({
                   className='w-full max-w-28 h-32 flex flex-col gap-2 justify-center items-center rounded-md overflow-hidden bg-muted'
                 >
                   <img
-                    src={image}
+                    src={
+                      image instanceof File ? URL.createObjectURL(image) : image
+                    }
                     alt={`Uploaded ${index}`}
                     className='w-full h-full object-cover'
                   />
@@ -198,7 +197,7 @@ const ComboInventoryCreation = ({
                     {/* <Checkbox
                       checked={inventoryItems.every((item) =>
                         comboDetails.items.some(
-                          (comboItem) => comboItem.Inv_Id === item.Inv_Id
+                          (comboItem) => comboItem.id === item.id
                         )
                       )}
                       onClick={() =>
@@ -222,16 +221,16 @@ const ComboInventoryCreation = ({
                     item.name.toLowerCase().includes(searchTerm.toLowerCase())
                   )
                   .map((item) => (
-                    <TableRow key={item.Inv_Id} className='gap-2'>
+                    <TableRow key={item.id} className='gap-2'>
                       <TableCell onClick={() => handleCheckboxChange(item)}>
                         <Checkbox
                           checked={comboDetails.items.some(
-                            (comboItem) => comboItem.Inv_Id === item.Inv_Id
+                            (comboItem) => comboItem.id === item.id
                           )}
                         />
                       </TableCell>
                       <TableCell className='font-medium py-4'>
-                        {item.Inv_Id}
+                        {item.id}
                       </TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.type}</TableCell>

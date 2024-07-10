@@ -5,7 +5,7 @@ const getUploadUrl = async (fileName, contentType) => {
   try {
     const response = await axios.get(`/s3/generate-upload-url?fileName=${fileName}&contentType=${contentType}`
     );
-    return response.data;
+    return response.data.url;
   } catch (error) {
     console.error("Error fetching upload URL:", error);
     throw error;
@@ -16,7 +16,7 @@ const getDownloadUrl = async (fileName) => {
   try {
     const response = await axios.get(`/s3/generate-download-url?fileName=${fileName}`
     );
-    return response.data.data.url;
+    return response.data.url;
   } catch (error) {
     console.error("Error fetching upload URL:", error);
     throw error;
@@ -25,8 +25,12 @@ const getDownloadUrl = async (fileName) => {
 // Function to upload a file using the signed URL
 const uploadDoc = async (file) => {
   try {
+    if (!(file instanceof File)) {
+      console.log("it url: ", file)
+      return file;
+    }
     const uploadData = await getUploadUrl(file.name, file.type);
-    const uploadURL = uploadData.data.url;
+    const uploadURL = uploadData;
 
     console.log("uploadUrl", uploadData, uploadURL);
 
@@ -53,7 +57,7 @@ const uploadDoc = async (file) => {
   }
 };
 
-const handleImageUpload = async (images) => {
+const handleS3Upload = async (images) => {
   try {
     const modifiedImages = await Promise.all(images.map(uploadDoc));
     return modifiedImages;
@@ -62,4 +66,4 @@ const handleImageUpload = async (images) => {
   }
 }
 
-export { uploadDoc, handleImageUpload };
+export { uploadDoc, handleS3Upload };
