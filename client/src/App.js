@@ -10,6 +10,7 @@ import Home from './components/Home';
 import AdminLayout from './layouts/AdminLayout';
 import axios from 'axios';
 
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {

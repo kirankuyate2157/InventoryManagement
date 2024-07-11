@@ -25,12 +25,12 @@ import { getAllInventory, updateInventoryBatch } from "./apis/inventoryAPI";
 import { createCombo } from "./apis/comboAPI";
 
 const Inventory = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState("inv");
+  const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState(null);
   const [filterOption, setFilterOption] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageDoc, setPageDoc] = useState(null);
+  const perPage = 10;
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -41,11 +41,8 @@ const Inventory = () => {
     stocks: 0,
     categories: [],
   });
-  const perPage = 10;
 
-  const [applicant, setApplicant] = useState([]);
-  const [loader, setLoader] = useState(false);
-  const [filterOptions, setFilterOptions] = useState([]);
+
   const [isPopOpen, setIsPopOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [uploadedData, setUploadedData] = useState([]);
@@ -120,7 +117,6 @@ const Inventory = () => {
   ];
 
   const updateInventory = async (updatedData) => {
-    // Logic to update inventory with the new data
     const res = await updateInventoryBatch(updatedData);
     console.log("Updated Inventory Data:", res);
   };

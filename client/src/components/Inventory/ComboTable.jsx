@@ -9,8 +9,9 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { RiEdit2Line } from "react-icons/ri";
+import { updateComboItem } from "./apis/comboAPI";
 
-const ComboTable = ({ items }) => {
+const ComboTable = ({ comboId, items,fetchCombo }) => {
   const [editMode, setEditMode] = useState(null);
   const [editedItems, setEditedItems] = useState(items);
 
@@ -18,8 +19,11 @@ const ComboTable = ({ items }) => {
     setEditMode(index);
   };
 
-  const handleSave = (index) => {
+  const handleSave = async (index) => {
+    console.log(comboId, items[index].id, items[index]);
+    const res = await updateComboItem(comboId, items[index].id, items[index]);
     setEditMode(null);
+    fetchCombo();
   };
 
   const handleChange = (index, field, value) => {
@@ -52,17 +56,17 @@ const ComboTable = ({ items }) => {
                 <div className='flex justify-start items-center gap-2 w-full '>
                   <img
                     src={
-                      item.image ||
+                      item.inventory.images[1] ||
                       "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8OHx8fGVufDB8fHx8fA%3D%3D"
                     }
-                    alt={item.name}
+                    alt=''
                     className='w-10 h-11 bg-muted rounded'
                   />
-                  <h1>{item.id}</h1>
+                  <h1>{item.inventory.id}</h1>
                 </div>
               </TableCell>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.type}</TableCell>
+              <TableCell>{item.inventory.name}</TableCell>
+              <TableCell>{item.inventory.type}</TableCell>
               <TableCell>
                 {editMode === index ? (
                   <input
@@ -81,14 +85,14 @@ const ComboTable = ({ items }) => {
                 {editMode === index ? (
                   <input
                     type='text'
-                    value={item.unit}
+                    value={item.comboUnit}
                     onChange={(e) =>
-                      handleChange(index, "unit", e.target.value)
+                      handleChange(index, "comboUnit", e.target.value)
                     }
                     className='w-full p-2 border rounded'
                   />
                 ) : (
-                  item.unit
+                  item.comboUnit
                 )}
               </TableCell>
               <TableCell>

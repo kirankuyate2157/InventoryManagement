@@ -26,6 +26,7 @@ model Inventory {
   categories  String[]
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
+  combo_items  ComboItem[]
 }
 
 model Combo {
@@ -47,6 +48,7 @@ model ComboItem {
   comboUnit    String
   combo_id     Int
   combo        Combo     @relation(fields: [combo_id], references: [id])
+  inventory    Inventory @relation(fields: [inventory_id], references: [id])
 
   @@unique([inventory_id, combo_id])
 }

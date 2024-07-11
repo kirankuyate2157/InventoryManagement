@@ -18,12 +18,12 @@ const AdminLayout = () => {
         <ResizablePanel className="hidden lg:block" defaultSize={12} maxSize={12} minSize={8}>
           <Sidebar />
         </ResizablePanel>
-        <ResizableHandle  className="hidden lg:block" />
+        <ResizableHandle  className="hidden lwg:block" />
         <ResizablePanel>
           <div className='w-full h-full relative '>
             <TopBar />
             <Navbar />
-            <div className='px-2 lg:px-10 '>
+            <div className='px-2 lg:px-10 max-h-[80vh] overflow-auto '>
             <Outlet />
             </div>
             <MobileBar/>

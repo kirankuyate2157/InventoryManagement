@@ -49,7 +49,7 @@ const createCombo = async (req, res) => {
 const updateComboItem = async (req, res) => {
   const { comboId, itemId } = req.params;
   const { quantity, comboPrice, comboUnit } = req.body;
-
+console.log(comboId, itemId, quantity, comboPrice, comboUnit);
   if (!quantity && !comboPrice && !comboUnit) {
     return res
       .status(400)
@@ -157,7 +157,7 @@ const addItemToCombo = async (req, res) => {
 
     const comboItems = await prisma.comboItem.findMany({
       where: { combo_id: parseInt(id, 10) },
-    });
+    }); 
 
     const totalPrice = calculateTotalPrice(comboItems);
 
@@ -193,35 +193,35 @@ const areItemsValid = (items) => {
 };
 
 const getAllCombos = async (req, res) => {
+
+  console.log("all : 😉😉😉")
   const { page = 1, limit = 10, search = "" } = req.query;
 
   try {
     const offset = (page - 1) * limit;
-    const query = [
-      { name: { contains: search, mode: "insensitive" } },
-      { description: { contains: search, mode: "insensitive" } },
-      { total_price: { contains: search, mode: "insensitive" } },
-    ];
-
+    const query = {
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        // { description: { contains: search, mode: "insensitive" } },
+        // { total_price: { contains: search, mode: "insensitive" } },
+      ]
+    };
     const combos = await prisma.combo.findMany({
-      where: {
-        OR: query,
-      },
+      where: query,
       skip: parseInt(offset, 10),
       take: parseInt(limit, 10),
       include: {
         items: {
           include: {
-            inventory: true,
+            inventory:true,
           },
         },
       },
     });
+    
 
     const totalCombos = await prisma.combo.count({
-      where: {
-        OR: query,
-      },
+      where:query
     });
 
     res.status(200).json({

@@ -175,12 +175,12 @@ const updateInventoryBatch = async (req, res) => {
 };
 
 const getInventoryById = async (req, res) => {
-  const { id } = Number(req.params);
+  const { id } = req.params;
 
   try {
     const inventory = await prisma.inventory.findUnique({
       where: {
-        id: id,
+        id: Number(id),
       },
     });
 
@@ -222,9 +222,6 @@ const getAllInventory = async (req, res) => {
 
     const inventory = await prisma.inventory.findMany({
       where: query,
-      orderBy: {
-        [sortBy]: sortOrder,
-      },
       skip: offset,
       take: limit,
     });
